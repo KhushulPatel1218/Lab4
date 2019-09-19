@@ -1,0 +1,109 @@
+#include <iostream>
+#include <iomanip>
+#include <cmath>
+#include <fstream>
+
+using namespace std;
+
+//struct variable that defines temperature, wind speed, dew point, wind chill and cloud base.
+struct Weather
+{
+  double temp[20];
+  double wSpeed[20];
+  double dPoint[20];
+  double wChill;
+  double cBase;
+};
+//deceleration of functions
+Weather input (Weather);
+double windChill (Weather);
+double cloudBase (Weather);
+void output (Weather);
+
+int
+main ()
+{
+//call to main of functions
+  Weather w1;
+  w1 = input (w1);
+  windChill (w1);
+  cloudBase (w1);
+  output (w1);
+
+}
+
+
+//input function gathers data
+Weather
+input (Weather w1)
+{
+  cout << "-----------------------------------------" << endl;
+  cout << "|This program calculates wind chill     |" << endl;
+  cout << "|factor and cloud base altitude given   |" << endl;
+  cout << "|temperature in Fahrenheit              |" << endl;
+  cout << "-----------------------------------------" << endl;
+
+
+  return w1;
+
+}
+
+//computes the wind chill
+double
+windChill (Weather w1)
+{
+  w1.wChill =
+    (35.74 + (0.6215 * w1.temp[20])) - (35.75 * (pow (w1.wSpeed[20], 0.16))) +
+    (0.4275 * ((w1.temp[20]) * (pow (w1.wSpeed[20], 0.16))));
+  return w1.wChill;
+
+}
+
+//computes the cloud base
+double
+cloudBase (Weather w1)
+{
+  w1.cBase = ((((w1.temp[20] - w1.dPoint[20]) / (4.4)) * 1000));
+  return w1.cBase;
+
+}
+
+//outputs the data
+void
+output (Weather w1)
+{
+
+  cout << "Temperature:" << std::
+    setw (15) << "Wind Speed:" << std::setw (15) << "Dew Point:" << std::
+    setw (15) << "Wind Chill:" << std::setw (15) << "Cloud Base:" << endl;
+  cout <<
+    "-----------------------------------------------------------------------------------"
+    << endl;
+ ifstream file_("weatherData.txt");
+    if(file_.is_open()){
+    while(file_ >> w1.temp[20] >> w1.wSpeed[20] >> w1.dPoint[20])
+    {
+        if (w1.temp[20] <= 50 && w1.wSpeed[20] > 3)
+    {
+      cout << w1.temp[20] << std::setw (20) << w1.
+	wSpeed[20] << std::
+	setw (20) << w1.dPoint[20] << std::setw (15) << setprecision (2) <<
+	windChill (w1) << std::setw (15) << setprecision (5) << cloudBase (w1)
+	<< endl;
+    }
+  else
+    {
+      cout << w1.temp[20] << std::setw (20) << w1.
+	wSpeed[20] << std::setw (20) << w1.dPoint[20] << std::
+	setw (15) << setprecision (2) << "***" << std::setw (15) <<
+	setprecision (5) << cloudBase (w1) << endl;
+      cout <<
+	"*** The temperature must be bellow 50 degrees and the wind speed must be greater than 3 mph."
+	<< endl;
+    }
+    }
+  file_.close();
+
+}
+
+}
